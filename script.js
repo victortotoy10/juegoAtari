@@ -154,7 +154,7 @@ Game.draw = function () {
   // Jugador (paddle izquierdo)
   this.context.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
 
-  // Oponente (paddle derecho) - aún sin movimiento
+  // Oponente (paddle derecho)
   this.context.fillRect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
 
   // Pelota
@@ -169,7 +169,19 @@ Game.draw = function () {
   this.context.strokeStyle = '#fff';
   this.context.stroke();
 
-  // Puntajes (puedes agregar luego)
+  // Mostrar puntajes (a la izquierda y derecha)
+  this.context.font = '60px Courier New';
+  this.context.fillStyle = '#ffffff';
+  this.context.textAlign = 'center';
+
+  this.context.fillText(this.player.score, this.canvas.width / 4, 100);
+  this.context.fillText(this.paddle.score, this.canvas.width * 3 / 4, 100);
+
+  // Mostrar mensaje de inicio si el juego no está corriendo
+  if (!this.running) {
+    this.context.font = '40px Courier New';
+    this.context.fillText('Presiona cualquier tecla para comenzar', this.canvas.width / 2, this.canvas.height / 2);
+  }
 };
 
 Game.loop = function () {
