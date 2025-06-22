@@ -47,7 +47,7 @@ var Ball = {
             moveX: DIRECTION.RIGHT,
             moveY: DIRECTION.UP
         };
-    }
+    }+
 };
 
 var Game = {
