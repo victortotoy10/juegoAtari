@@ -7,11 +7,54 @@ var DIRECTION = {
   RIGHT: 4
 };
 
+// Sonidos
+var beep1 = new Audio('sounds/beep1.mp3');
+var beep2 = new Audio('sounds/beep2.mp3');
+var beep3 = new Audio('sounds/beep3.mp3');
+
 // Configuración del juego
 var rounds = [5, 5, 3, 3, 2];
 
 // Arreglo de colores para las rondas
 var colors = ['#1abc9c', '#2ecc71', '#3498db', '#e74c3c', '#9b59b6'];
+
+// Definición del objeto Paddle (Paleta)
+var Paddle = {
+  new: function (side) {
+    return {
+      x: side === 'left' ? 10 : this.canvas.width - 20,
+      y: (this.canvas.height / 2) - 50,
+      width: 10,
+      height: 100,
+      score: 0,
+      move: DIRECTION.IDLE,
+      speed: 8
+    };
+  }
+};
+
+// Definición del objeto Ball (Pelota)
+var Ball = {
+  new: function (speed) {
+    var obj = {
+      x: this.canvas.width / 2,
+      y: this.canvas.height / 2,
+      width: 10,
+      height: 10,
+      speed: speed || 4,
+      moveX: DIRECTION.RIGHT,
+      moveY: DIRECTION.UP
+    };
+
+    // Asegurarse de que la pelota no aparezca dentro de la paleta del jugador
+    if (obj.x < this.player.x + this.player.width) {
+      obj.x = this.player.x + this.player.width;
+      obj.moveX = DIRECTION.RIGHT;
+    }
+
+    return obj;
+  }
+};
 
 var Game = {
   initialize: function () {
@@ -256,9 +299,4 @@ Game.loop = function () {
 
 var Pong = Object.assign({}, Game);
 Pong.initialize();
-
-// Sonidos
-var beep1 = new Audio('sounds/beep1.mp3');
-var beep2 = new Audio('sounds/beep2.mp3');
-var beep3 = new Audio('sounds/beep3.mp3');
 
