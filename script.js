@@ -43,8 +43,8 @@ var Game = {
       }
 
       // Teclas para mover el jugador
-      if (key.keyCode === 38 || key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-      if (key.keyCode === 40 || key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+      if (key.code === "ArrowUp" || key.code === "KeyW") Pong.player.move = DIRECTION.UP;
+      if (key.code === "ArrowDown" || key.code === "KeyS") Pong.player.move = DIRECTION.DOWN;
     });
 
     document.addEventListener('keyup', function () {
