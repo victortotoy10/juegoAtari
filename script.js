@@ -303,7 +303,7 @@ Game.loop = function () {
   this.draw();
 
   if (!this.over) {
-    requestAnimationFrame(this.loop.bind(this));
+    requestAnimationFrame(this.loop.bind(this)); // <-- Asegura el contexto correcto de 'this'
   }
 };
 
