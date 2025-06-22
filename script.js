@@ -162,14 +162,15 @@ Game.draw = function () {
   // Pelota
   this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 
-  // Línea central punteada
+  // Dibuja la red punteada en el centro
   this.context.beginPath();
   this.context.setLineDash([7, 15]);
   this.context.moveTo(this.canvas.width / 2, 0);
   this.context.lineTo(this.canvas.width / 2, this.canvas.height);
   this.context.lineWidth = 10;
-  this.context.strokeStyle = '#fff';
+  this.context.strokeStyle = '#ffffff';
   this.context.stroke();
+  this.context.setLineDash([]); // Resetear estilo de línea
 
   // Mostrar puntajes (a la izquierda y derecha)
   this.context.font = '60px Courier New';
