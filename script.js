@@ -202,7 +202,17 @@ Game.update = function () {
       beep1.play(); // Sonido de rebote en paddle
     }
 
-    // (Aquí agregaremos colisiones con el paddle derecho luego)
+    // Colisiones con la paleta de la IA (derecha)
+    if (
+      this.ball.x + this.ball.width >= this.paddle.x &&
+      this.ball.x <= this.paddle.x + this.paddle.width &&
+      this.ball.y + this.ball.height >= this.paddle.y &&
+      this.ball.y <= this.paddle.y + this.paddle.height
+    ) {
+      this.ball.moveX = DIRECTION.LEFT; // Invierte la dirección X
+      this.ball.x = this.paddle.x - this.ball.width; // Evita que se pegue
+      beep1.play(); // Sonido de rebote en la paleta
+    }
 
     // Detectar cuando la pelota pasa los bordes (puntaje)
     if (this.ball.x <= 0) {
