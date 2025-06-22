@@ -53,12 +53,11 @@ var Game = {
     this.ball = Ball.new.call(this);
 
     this.running = this.over = false;
-    this.turn = this.paddle;
-    this.timer = this.round = 0;
+    this.turn = null; // Control de turno
+    this.timer = 0;   // Control de tiempo de turno
     this.color = '#2c3e50';
 
     Pong.listen();
-    
   },
 
   listen: function () {
@@ -77,6 +76,18 @@ var Game = {
     document.addEventListener('keyup', function () {
       Pong.player.move = DIRECTION.IDLE;
     });
+  },
+
+  _turnDelayIsOver: function() {
+    return ((new Date()).getTime() - this.timer >= 1000); // 1 segundo de retraso
+  },
+
+  _resetTurn: function(victor, loser) {
+    this.ball = Ball.new.call(this, this.ball.speed);
+    this.turn = loser;
+    this.timer = (new Date()).getTime();
+    // El puntaje ya se suma en update, si quieres puedes dejar solo aquí:
+    // victor.score++;
   }
 };
 
@@ -105,6 +116,13 @@ Game.update = function () {
     if (this.paddle.y <= 0) this.paddle.y = 0;
     if (this.paddle.y >= this.canvas.height - this.paddle.height) {
       this.paddle.y = this.canvas.height - this.paddle.height;
+    }
+
+    // Solo mover la pelota si el retraso de turno terminó
+    if (this.turn && this._turnDelayIsOver()) {
+      this.ball.moveX = this.turn === this.player ? DIRECTION.LEFT : DIRECTION.RIGHT;
+      this.ball.moveY = [DIRECTION.UP, DIRECTION.DOWN][Math.floor(Math.random() * 2)];
+      this.turn = null;
     }
 
     // Movimiento de la pelota
@@ -191,14 +209,6 @@ Game.loop = function () {
   if (!this.over) {
     requestAnimationFrame(this.loop.bind(this));
   }
-};
-
-Game._resetTurn = function(victor, loser) {
-  this.ball = Ball.new.call(this, this.ball.speed);
-  this.turn = loser;
-  this.timer = (new Date()).getTime();
-
-  // Podrías agregar sonidos o animaciones aquí si quieres
 };
 
 var Pong = Object.assign({}, Game);
