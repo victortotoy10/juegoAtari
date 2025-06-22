@@ -126,6 +126,17 @@ Game.update = function () {
     }
 
     // (Aquí agregaremos colisiones con el paddle derecho luego)
+
+    // Detectar cuando la pelota pasa los bordes (puntaje)
+    if (this.ball.x <= 0) {
+      // Punto para paddle derecho
+      this.paddle.score++;
+      this._resetTurn(this.paddle, this.player);
+    } else if (this.ball.x >= this.canvas.width - this.ball.width) {
+      // Punto para jugador
+      this.player.score++;
+      this._resetTurn(this.player, this.paddle);
+    }
   }
 };
 
@@ -168,6 +179,14 @@ Game.loop = function () {
   if (!this.over) {
     requestAnimationFrame(this.loop.bind(this));
   }
+};
+
+Game._resetTurn = function(victor, loser) {
+  this.ball = Ball.new.call(this, this.ball.speed);
+  this.turn = loser;
+  this.timer = (new Date()).getTime();
+
+  // Podrías agregar sonidos o animaciones aquí si quieres
 };
 
 var Pong = Object.assign({}, Game);
