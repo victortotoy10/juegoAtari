@@ -15,6 +15,7 @@ var colors = ['#1abc9c', '#2ecc71', '#3498db', '#e74c3c', '#9b59b6'];
 
 var Game = {
   initialize: function () {
+    // Inicializa el canvas y variables del juego
     this.canvas = document.querySelector('canvas');
     this.context = this.canvas.getContext('2d');
 
@@ -53,16 +54,19 @@ var Game = {
   },
 
   _generateRoundColor: function () {
+    // Genera un color de fondo aleatorio distinto al actual
     var newColor = colors[Math.floor(Math.random() * colors.length)];
     if (newColor === this.color) return this._generateRoundColor();
     return newColor;
   },
 
   _turnDelayIsOver: function() {
+    // Verifica si terminó el retraso entre turnos
     return ((new Date()).getTime() - this.timer >= 1000); // 1 segundo de retraso
   },
 
   _resetTurn: function(victor, loser) {
+    // Reinicia la posición de la pelota y alterna el turno
     beep2.play(); // Sonido de punto/anotación
     this.ball = Ball.new.call(this, this.ball.speed);
     this.turn = loser;
@@ -75,6 +79,7 @@ var Game = {
 };
 
 Game.endGameMenu = function (text) {
+  // Muestra el menú de fin de juego
   this.context.font = '50px Courier New';
   this.context.fillStyle = this.color;
 
@@ -100,6 +105,7 @@ Game.endGameMenu = function (text) {
   }, 3000);
 };
 
+// Actualiza la posición de la pelota y paddles
 Game.update = function () {
   if (!this.over) {
     // Rebotes con los bordes superior e inferior
@@ -193,6 +199,7 @@ Game.update = function () {
   }
 };
 
+// Dibuja los elementos del juego en el canvas
 Game.draw = function () {
   // Limpiar canvas
   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
