@@ -315,6 +315,12 @@ Game.loop = function () {
   }
 };
 
-var Pong = Object.assign({}, Game);
-Pong.initialize();
+// Marcador de posición para el objeto global Pong
+var Pong;
+
+// Inicializa el juego cuando la ventana carga
+window.onload = function() {
+    Pong = Object.assign({}, Game);
+    Pong.initialize();
+};
 
