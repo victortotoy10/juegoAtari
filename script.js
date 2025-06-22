@@ -43,7 +43,7 @@ var Ball = {
             y: this.canvas.height / 2,
             width: 10,
             height: 10,
-            speed: speed || 4,
+            speed: speed || 8,
             moveX: DIRECTION.RIGHT,
             moveY: DIRECTION.UP
         };
