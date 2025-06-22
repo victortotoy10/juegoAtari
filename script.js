@@ -7,16 +7,12 @@ var DIRECTION = {
     RIGHT: 4
 };
 
-// Placeholder para efectos de sonido. Reemplaza estos objetos por archivos reales .mp3 en producción.
-var beep1 = {
-    play: function() { /* console.log('Playing beep1.mp3'); */ }
-};
-var beep2 = {
-    play: function() { /* console.log('Playing beep2.mp3'); */ }
-};
-var beep3 = {
-    play: function() { /* console.log('Playing beep3.mp3'); */ }
-};
+// Sonidos: ¡CORRECCIÓN APLICADA AQUÍ!
+// Asegúrate de que estos archivos .mp3 existan en una carpeta 'sounds'
+// dentro de la misma ubicación que tu archivo index.html.
+var beep1 = new Audio('sounds/beep1.mp3');
+var beep2 = new Audio('sounds/beep2.mp3');
+var beep3 = new Audio('sounds/beep3.mp3');
 
 // Configuración del juego
 var rounds = [5, 5, 3, 3, 2];
@@ -42,13 +38,12 @@ var Paddle = {
 // Definición del objeto Ball (Pelota)
 var Ball = {
     new: function (speed) {
-        // Se eliminó la lógica ineficaz de ajuste de posición inicial
         return {
             x: this.canvas.width / 2,
             y: this.canvas.height / 2,
             width: 10,
             height: 10,
-            speed: speed || 4, // Se mantiene tu velocidad predeterminada de 4
+            speed: speed || 4,
             moveX: DIRECTION.RIGHT,
             moveY: DIRECTION.UP
         };
@@ -68,24 +63,27 @@ var Game = {
         this.paddle = Paddle.new.call(this, 'right');
         this.ball = Ball.new.call(this);
 
-        this.running = this.over = false;
+        this.running = false; // El juego NO se ejecutará automáticamente al inicio
+        this.over = false;
         this.turn = null; // Control de turno
         this.timer = 0;   // Control de tiempo de turno
         this.color = '#2c3e50'; // color inicial del fondo
         this.round = 0;
 
-        // CORRECCIÓN CLAVE: Llama a listen en 'this' (el objeto Game)
-        // en lugar de en 'Pong' que aún no está completamente asignado.
-        this.listen();
+        this.listen(); // Configura los listeners de eventos
+
+        // Ya no se inicia el bucle aquí automáticamente
+        // this.running = true;
+        // window.requestAnimationFrame(this.loop.bind(this));
     },
 
     listen: function () {
         document.addEventListener('keydown', function (key) {
-            // Empezar el juego al presionar cualquier tecla
+            // Se reintrodujo la condición para iniciar el juego al presionar cualquier tecla
             if (Pong.running === false) {
                 Pong.running = true;
-                // CORRECCIÓN CLAVE: Vincula 'Pong.loop' a 'Pong' para mantener el contexto 'this'
-                window.requestAnimationFrame(Pong.loop.bind(Pong));
+                // ¡IMPORTANTE! Eliminado: window.requestAnimationFrame(Pong.loop.bind(Pong));
+                // El bucle de animación ya se inició en window.onload y ahora se actualiza condicionalmente.
             }
 
             // Teclas para mover el jugador
@@ -199,7 +197,6 @@ Game.update = function () {
         else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
 
         // Colisiones con la paleta del jugador (izquierda)
-        // CORRECCIÓN: Usar la lógica de colisión de rectángulos estándar
         if (
             this.ball.x <= this.player.x + this.player.width &&
             this.ball.x + this.ball.width >= this.player.x &&
@@ -211,7 +208,7 @@ Game.update = function () {
             beep1.play(); // Sonido de rebote en la paleta
         }
 
-        // Colisiones con la paleta de la IA (derecha) - esta lógica ya estaba bien
+        // Colisiones con la paleta de la IA (derecha)
         if (
             this.ball.x + this.ball.width >= this.paddle.x &&
             this.ball.x <= this.paddle.x + this.paddle.width &&
@@ -270,7 +267,7 @@ Game.draw = function () {
     this.context.fillStyle = this.color;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Paletas y pelota
+    // Paletas y pelota se dibujan SIEMPRE para que se vean incluso antes de iniciar el juego
     this.context.fillStyle = '#fff';
 
     // Jugador (paddle izquierdo)
@@ -293,6 +290,7 @@ Game.draw = function () {
     this.context.setLineDash([]); // Resetear estilo de línea
 
     // Mostrar puntajes (a la izquierda y derecha)
+    // Se dibujan SIEMPRE para que se vean incluso antes de iniciar el juego
     this.context.font = '60px Courier New';
     this.context.fillStyle = '#ffffff';
     this.context.textAlign = 'center';
@@ -300,19 +298,25 @@ Game.draw = function () {
     this.context.fillText(this.player.score, this.canvas.width / 4, 100);
     this.context.fillText(this.paddle.score, this.canvas.width * 3 / 4, 100);
 
-    // Mostrar mensaje de inicio si el juego no está corriendo
+    // Reintroducido: el mensaje de "Presiona cualquier tecla para comenzar"
     if (!this.running) {
         this.context.font = '40px Courier New';
-        this.context.fillText('Presiona cualquier tecla para comenzar', this.canvas.width / 2, this.canvas.height / 2);
+        this.context.fillStyle = '#ffffff'; // Color del texto
+        this.context.textAlign = 'center';
+        this.context.fillText('Presiona W/S o las flechas para comenzar', this.canvas.width / 2, this.canvas.height / 2);
     }
 };
 
 Game.loop = function () {
-    this.update();
+    // Solo actualiza la lógica del juego si está 'corriendo'
+    if (this.running) {
+        this.update();
+    }
+    // Dibuja siempre para asegurar que el mensaje de inicio y los elementos estáticos sean visibles
     this.draw();
 
     if (!this.over) {
-        requestAnimationFrame(this.loop.bind(this)); // <-- Ya estaba correcto con .bind(this)
+        requestAnimationFrame(this.loop.bind(this));
     }
 };
 
@@ -323,4 +327,7 @@ var Pong;
 window.onload = function() {
     Pong = Object.assign({}, Game);
     Pong.initialize();
+    // ¡IMPORTANTE! Se inicia el bucle de dibujo inmediatamente al cargar,
+    // pero la lógica del juego (update) solo se activa con la tecla.
+    window.requestAnimationFrame(Pong.loop.bind(Pong));
 };
