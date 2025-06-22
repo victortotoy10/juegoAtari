@@ -63,12 +63,14 @@ var Game = {
   },
 
   _resetTurn: function(victor, loser) {
+    beep2.play(); // Sonido de punto/anotación
     this.ball = Ball.new.call(this, this.ball.speed);
     this.turn = loser;
     this.timer = (new Date()).getTime();
     this.color = this._generateRoundColor(); // Cambia el color de fondo cada ronda
     // El puntaje ya se suma en update, si quieres puedes dejar solo aquí:
     // victor.score++;
+    beep3.play(); // Sonido de nueva ronda
   }
 };
 
@@ -122,6 +124,7 @@ Game.update = function () {
     ) {
       this.ball.x = this.player.x + this.ball.width;
       this.ball.moveX = DIRECTION.RIGHT;
+      beep1.play(); // Sonido de rebote en paddle
     }
 
     // (Aquí agregaremos colisiones con el paddle derecho luego)
@@ -194,4 +197,9 @@ Game.loop = function () {
 
 var Pong = Object.assign({}, Game);
 Pong.initialize();
+
+// Sonidos
+var beep1 = new Audio('sounds/beep1.mp3');
+var beep2 = new Audio('sounds/beep2.mp3');
+var beep3 = new Audio('sounds/beep3.mp3');
 
