@@ -7,10 +7,16 @@ var DIRECTION = {
   RIGHT: 4
 };
 
-// Sonidos
-var beep1 = new Audio('sounds/beep1.mp3');
-var beep2 = new Audio('sounds/beep2.mp3');
-var beep3 = new Audio('sounds/beep3.mp3');
+// Placeholder para efectos de sonido. Reemplaza estos objetos por archivos reales .mp3 en producción.
+var beep1 = {
+    play: function() { /* console.log('Playing beep1.mp3'); */ }
+};
+var beep2 = {
+    play: function() { /* console.log('Playing beep2.mp3'); */ }
+};
+var beep3 = {
+    play: function() { /* console.log('Playing beep3.mp3'); */ }
+};
 
 // Configuración del juego
 var rounds = [5, 5, 3, 3, 2];
