@@ -9,37 +9,10 @@ var DIRECTION = {
 
 // Configuración del juego
 var rounds = [5, 5, 3, 3, 2];
-var colors = ['#1abc9c', '#2ecc71', '#3498db', '#e74c3c', '#9b59b6'];
- 
-// Objeto pelota
-var Ball = {
-  new: function (speed) {
-    return {
-      width: 18,
-      height: 18,
-      x: (this.canvas.width / 2) - 9,
-      y: (this.canvas.height / 2) - 9,
-      moveX: DIRECTION.IDLE,
-      moveY: DIRECTION.IDLE,
-      speed: speed || 9
-    };
-  }
-};
 
-// Objeto paddle
-var Paddle = {
-  new: function (side) {
-    return {
-      width: 18,
-      height: 70,
-      x: side === 'left' ? 150 : this.canvas.width - 150,
-      y: (this.canvas.height / 2) - 35,
-      score: 0,
-      move: DIRECTION.IDLE,
-      speed: 10
-    };
-  }
-};
+// Arreglo de colores para las rondas
+var colors = ['#1abc9c', '#2ecc71', '#3498db', '#e74c3c', '#9b59b6'];
+
 var Game = {
   initialize: function () {
     this.canvas = document.querySelector('canvas');
@@ -55,7 +28,8 @@ var Game = {
     this.running = this.over = false;
     this.turn = null; // Control de turno
     this.timer = 0;   // Control de tiempo de turno
-    this.color = '#2c3e50';
+    this.color = '#2c3e50'; // color inicial del fondo
+    this.round = 0;
 
     Pong.listen();
   },
@@ -78,6 +52,12 @@ var Game = {
     });
   },
 
+  _generateRoundColor: function () {
+    var newColor = colors[Math.floor(Math.random() * colors.length)];
+    if (newColor === this.color) return this._generateRoundColor();
+    return newColor;
+  },
+
   _turnDelayIsOver: function() {
     return ((new Date()).getTime() - this.timer >= 1000); // 1 segundo de retraso
   },
@@ -86,6 +66,7 @@ var Game = {
     this.ball = Ball.new.call(this, this.ball.speed);
     this.turn = loser;
     this.timer = (new Date()).getTime();
+    this.color = this._generateRoundColor(); // Cambia el color de fondo cada ronda
     // El puntaje ya se suma en update, si quieres puedes dejar solo aquí:
     // victor.score++;
   }
