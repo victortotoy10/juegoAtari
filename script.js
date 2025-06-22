@@ -91,8 +91,8 @@ Game.update = function () {
     else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
 
     // Limitar movimiento del jugador dentro del canvas
-    if (this.player.y <= 0) this.player.y = 0;
-    if (this.player.y >= this.canvas.height - this.player.height) this.player.y = this.canvas.height - this.player.height;
+    if (this.player.y < 0) this.player.y = 0;
+    if (this.player.y > this.canvas.height - this.player.height) this.player.y = this.canvas.height - this.player.height;
 
     // Movimiento IA paddle derecho (oponente)
     if (this.paddle.y + this.paddle.height / 2 < this.ball.y) {
