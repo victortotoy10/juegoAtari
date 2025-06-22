@@ -91,8 +91,16 @@ var Game = {
       if (key.code === "ArrowDown" || key.code === "KeyS") Pong.player.move = DIRECTION.DOWN;
     });
 
-    document.addEventListener('keyup', function () {
-      Pong.player.move = DIRECTION.IDLE;
+    document.addEventListener('keyup', function (key) {
+      // Detener el movimiento solo si la tecla soltada era de movimiento
+      if (
+        key.code === "ArrowUp" ||
+        key.code === "KeyW" ||
+        key.code === "ArrowDown" ||
+        key.code === "KeyS"
+      ) {
+        Pong.player.move = DIRECTION.IDLE;
+      }
     });
   },
 
