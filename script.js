@@ -74,6 +74,32 @@ var Game = {
   }
 };
 
+Game.endGameMenu = function (text) {
+  this.context.font = '50px Courier New';
+  this.context.fillStyle = this.color;
+
+  // Fondo del texto
+  this.context.fillRect(
+    this.canvas.width / 2 - 350,
+    this.canvas.height / 2 - 48,
+    700,
+    100
+  );
+
+  this.context.fillStyle = '#ffffff';
+  this.context.fillText(
+    text,
+    this.canvas.width / 2,
+    this.canvas.height / 2 + 15
+  );
+
+  // Reiniciar el juego después de 3 segundos
+  setTimeout(() => {
+    Pong = Object.assign({}, Game);
+    Pong.initialize();
+  }, 3000);
+};
+
 Game.update = function () {
   if (!this.over) {
     // Rebotes con los bordes superior e inferior
@@ -138,6 +164,31 @@ Game.update = function () {
       // Punto para jugador
       this.player.score++;
       this._resetTurn(this.player, this.paddle);
+    }
+
+    // Verificar si el jugador ganó
+    if (this.player.score >= rounds[this.round]) {
+      if (!rounds[this.round + 1]) {
+        this.over = true;
+        setTimeout(() => this.endGameMenu('¡Ganaste!'), 500);
+        return;
+      } else {
+        // Siguiente ronda
+        this.color = this._generateRoundColor();
+        this.round++;
+        this.player.score = 0;
+        this.paddle.score = 0;
+        this.player.speed += 0.5;
+        this.paddle.speed += 1;
+        this.ball.speed += 1;
+        beep3.play();
+      }
+    }
+
+    // Verificar si la IA ganó
+    if (this.paddle.score >= rounds[this.round]) {
+      this.over = true;
+      setTimeout(() => this.endGameMenu('Perdiste 😢'), 500);
     }
   }
 };
