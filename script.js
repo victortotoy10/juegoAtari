@@ -94,6 +94,19 @@ Game.update = function () {
     if (this.player.y <= 0) this.player.y = 0;
     if (this.player.y >= this.canvas.height - this.player.height) this.player.y = this.canvas.height - this.player.height;
 
+    // Movimiento IA paddle derecho (oponente)
+    if (this.paddle.y + this.paddle.height / 2 < this.ball.y) {
+      this.paddle.y += this.paddle.speed / 1.5;
+    } else {
+      this.paddle.y -= this.paddle.speed / 1.5;
+    }
+
+    // Limitar movimiento paddle derecho dentro del canvas
+    if (this.paddle.y <= 0) this.paddle.y = 0;
+    if (this.paddle.y >= this.canvas.height - this.paddle.height) {
+      this.paddle.y = this.canvas.height - this.paddle.height;
+    }
+
     // Movimiento de la pelota
     if (this.ball.moveY === DIRECTION.UP) this.ball.y -= this.ball.speed / 1.5;
     else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += this.ball.speed / 1.5;
