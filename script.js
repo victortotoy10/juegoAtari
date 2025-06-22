@@ -58,6 +58,7 @@ var Game = {
     this.color = '#2c3e50';
 
     Pong.listen();
+    
   },
 
   listen: function () {
@@ -76,6 +77,83 @@ var Game = {
     document.addEventListener('keyup', function () {
       Pong.player.move = DIRECTION.IDLE;
     });
+  }
+};
+
+Game.update = function () {
+  if (!this.over) {
+    // Rebotes con los bordes superior e inferior
+    if (this.ball.y <= 0) this.ball.moveY = DIRECTION.DOWN;
+    if (this.ball.y >= this.canvas.height - this.ball.height) this.ball.moveY = DIRECTION.UP;
+
+    // Movimiento del jugador (paddle izquierdo)
+    if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
+    else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
+
+    // Limitar movimiento del jugador dentro del canvas
+    if (this.player.y <= 0) this.player.y = 0;
+    if (this.player.y >= this.canvas.height - this.player.height) this.player.y = this.canvas.height - this.player.height;
+
+    // Movimiento de la pelota
+    if (this.ball.moveY === DIRECTION.UP) this.ball.y -= this.ball.speed / 1.5;
+    else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += this.ball.speed / 1.5;
+
+    if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
+    else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
+
+    // Colisiones con la paleta del jugador
+    if (
+      this.ball.x - this.ball.width <= this.player.x &&
+      this.ball.x >= this.player.x - this.player.width &&
+      this.ball.y <= this.player.y + this.player.height &&
+      this.ball.y + this.ball.height >= this.player.y
+    ) {
+      this.ball.x = this.player.x + this.ball.width;
+      this.ball.moveX = DIRECTION.RIGHT;
+    }
+
+    // (Aquí agregaremos colisiones con el paddle derecho luego)
+  }
+};
+
+Game.draw = function () {
+  // Limpiar canvas
+  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Fondo
+  this.context.fillStyle = this.color;
+  this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Paletas y pelota
+  this.context.fillStyle = '#fff';
+
+  // Jugador (paddle izquierdo)
+  this.context.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
+
+  // Oponente (paddle derecho) - aún sin movimiento
+  this.context.fillRect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+
+  // Pelota
+  this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
+
+  // Línea central punteada
+  this.context.beginPath();
+  this.context.setLineDash([7, 15]);
+  this.context.moveTo(this.canvas.width / 2, 0);
+  this.context.lineTo(this.canvas.width / 2, this.canvas.height);
+  this.context.lineWidth = 10;
+  this.context.strokeStyle = '#fff';
+  this.context.stroke();
+
+  // Puntajes (puedes agregar luego)
+};
+
+Game.loop = function () {
+  this.update();
+  this.draw();
+
+  if (!this.over) {
+    requestAnimationFrame(this.loop.bind(this));
   }
 };
 
